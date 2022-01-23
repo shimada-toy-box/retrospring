@@ -10,7 +10,6 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         expect(Question.last.content).to eq(question_content)
         expect(Question.last.author_is_anonymous).to be(expected_question_anonymous)
         expect(Question.last.user).to eq(expected_question_user)
-        expect(Question.last.direct).to eq(expected_question_direct)
       end
 
       if check_for_inbox
@@ -86,7 +85,6 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
 
         context "when user allows anonymous questions" do
           let(:user_allows_anonymous_questions) { true }
-          let(:expected_question_direct) { true }
 
           context "when anonymousQuestion is true" do
             let(:anonymous_question) { "true" }
@@ -111,7 +109,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
             let(:expected_response) do
               {
                 "success" => false,
-                "status" => "unknown",
+                "status" => "forbidden",
                 "message" => anything
               }
             end
@@ -122,7 +120,6 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
           context "when anonymousQuestion is false" do
             let(:anonymous_question) { "false" }
             let(:expected_question_anonymous) { false }
-            let(:expected_question_direct) { true }
 
             include_examples "creates the question"
           end
@@ -131,7 +128,6 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
 
       context "when rcpt is followers" do
         let(:rcpt) { "followers" }
-        let(:expected_question_direct) { false }
 
         context "when anonymousQuestion is true" do
           let(:anonymous_question) { "true" }
@@ -150,8 +146,24 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         end
       end
 
-      context "when rcpt is a non-existent user" do
+      context "when rcpt is an invalid value" do
         let(:rcpt) { "tripmeister_eder" }
+        let(:anonymous_question) { "false" }
+        let(:expected_response) do
+          {
+            "success" => false,
+            "status" => "bad_request",
+            "message" => anything
+          }
+        end
+
+        include_examples "does not create the question", false
+
+        include_examples "returns the expected response"
+      end
+
+      context "when rcpt is a non-existent user" do
+        let(:rcpt) { "-1" }
         let(:anonymous_question) { "false" }
         let(:expected_response) do
           {
@@ -186,7 +198,6 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
 
         context "when user allows anonymous questions" do
           let(:user_allows_anonymous_questions) { true }
-          let(:expected_question_direct) { true }
 
           include_examples "creates the question"
 
@@ -195,7 +206,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
             let(:expected_response) do
               {
                 "success" => false,
-                "status" => "unknown",
+                "status" => "bad_request",
                 "message" => anything
               }
             end
@@ -209,7 +220,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
           let(:expected_response) do
             {
               "success" => false,
-              "status" => "unknown",
+              "status" => "forbidden",
               "message" => anything
             }
           end
@@ -218,6 +229,13 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
 
           context "when anonymousQuestion is false" do
             let(:anonymous_question) { "false" }
+            let(:expected_response) do
+              {
+                "success" => false,
+                "status" => "bad_request",
+                "message" => anything
+              }
+            end
 
             include_examples "does not create the question"
           end
@@ -226,12 +244,32 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
 
       context "when rcpt is followers" do
         let(:rcpt) { "followers" }
+        let(:expected_response) do
+          {
+            "success" => false,
+            "status" => "bad_request",
+            "message" => anything
+          }
+        end
 
         include_examples "does not enqueue a QuestionWorker job"
       end
 
-      context "when rcpt is a non-existent user" do
+      context "when rcpt is an invalid value" do
         let(:rcpt) { "tripmeister_eder" }
+        let(:expected_response) do
+          {
+            "success" => false,
+            "status" => "bad_request",
+            "message" => anything
+          }
+        end
+
+        include_examples "does not create the question", false
+      end
+
+      context "when rcpt is a non-existent user" do
+        let(:rcpt) { "-1" }
         let(:expected_response) do
           {
             "success" => false,
@@ -336,9 +374,15 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
       end
 
       context "when the question does not exist" do
-        let(:question_id) { "sonic_the_hedgehog" }
+        let(:question_id) { "-1" }
 
         include_examples "does not delete the question", "not_found"
+      end
+
+      context "when the question is an invalid value" do
+        let(:question_id) { "sonic_the_hedgehog" }
+
+        include_examples "does not delete the question", "bad_request"
       end
     end
 
