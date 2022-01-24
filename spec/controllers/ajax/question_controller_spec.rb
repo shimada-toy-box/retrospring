@@ -152,8 +152,8 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         let(:expected_response) do
           {
             "success" => false,
-            "status"  => "bad_request",
-            "message" => anything
+            "status"  => "err",
+            "message" => "Invalid parameter"
           }
         end
 
@@ -247,8 +247,8 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         let(:expected_response) do
           {
             "success" => false,
-            "status"  => "bad_request",
-            "message" => anything
+            "status"  => "err",
+            "message" => "Invalid parameter"
           }
         end
 
@@ -260,8 +260,8 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         let(:expected_response) do
           {
             "success" => false,
-            "status"  => "bad_request",
-            "message" => anything
+            "status"  => "err",
+            "message" => "Invalid parameter"
           }
         end
 
