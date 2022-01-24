@@ -39,20 +39,18 @@ module UseCase
           raise Errors::BadRequest.new("anonymous must be set to true")
         end
 
-        if !target_user.privacy_allow_anonymous_questions && anonymous
-          # The target user does not want questions from strangers
-          raise Errors::Forbidden.new("no anonymous questions allowed")
-        end
+        # The target user does not want questions from strangers
+        raise Errors::Forbidden.new("no anonymous questions allowed") if !target_user.privacy_allow_anonymous_questions && anonymous
       end
 
       def increment_asked_count
-        if !(source_user_id && !anonymous)
+        unless source_user_id && !anonymous
           # Only increment the asked count of the source user if the question
           # is not anonymous, and we actually have a source user
           return
         end
 
-        source_user.increment!(:asked_count)
+        source_user.increment(:asked_count)
       end
 
       def source_user

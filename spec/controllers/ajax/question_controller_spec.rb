@@ -36,7 +36,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
       include_examples "returns the expected response"
     end
 
-    shared_examples "enqueues a QuestionWorker job" do |expected_rcpt|
+    shared_examples "enqueues a QuestionWorker job" do |_expected_rcpt|
       it "enqueues a QuestionWorker job" do
         allow(QuestionWorker).to receive(:perform_async)
         subject
@@ -59,9 +59,9 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
     let(:target_user) { FactoryBot.create(:user, privacy_allow_anonymous_questions: user_allows_anonymous_questions) }
     let(:params) do
       {
-        question: question_content,
+        question:          question_content,
         anonymousQuestion: anonymous_question,
-        rcpt: rcpt
+        rcpt:              rcpt
       }
     end
 
@@ -72,7 +72,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
       let(:expected_response) do
         {
           "success" => true,
-          "status" => "okay",
+          "status"  => "okay",
           "message" => anything
         }
       end
@@ -109,7 +109,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
             let(:expected_response) do
               {
                 "success" => false,
-                "status" => "forbidden",
+                "status"  => "forbidden",
                 "message" => anything
               }
             end
@@ -152,7 +152,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         let(:expected_response) do
           {
             "success" => false,
-            "status" => "bad_request",
+            "status"  => "bad_request",
             "message" => anything
           }
         end
@@ -168,7 +168,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         let(:expected_response) do
           {
             "success" => false,
-            "status" => "not_found",
+            "status"  => "not_found",
             "message" => anything
           }
         end
@@ -186,7 +186,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
       let(:expected_response) do
         {
           "success" => true,
-          "status" => "okay",
+          "status"  => "okay",
           "message" => anything
         }
       end
@@ -206,7 +206,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
             let(:expected_response) do
               {
                 "success" => false,
-                "status" => "bad_request",
+                "status"  => "bad_request",
                 "message" => anything
               }
             end
@@ -220,7 +220,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
           let(:expected_response) do
             {
               "success" => false,
-              "status" => "forbidden",
+              "status"  => "forbidden",
               "message" => anything
             }
           end
@@ -232,7 +232,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
             let(:expected_response) do
               {
                 "success" => false,
-                "status" => "bad_request",
+                "status"  => "bad_request",
                 "message" => anything
               }
             end
@@ -247,7 +247,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         let(:expected_response) do
           {
             "success" => false,
-            "status" => "bad_request",
+            "status"  => "bad_request",
             "message" => anything
           }
         end
@@ -260,7 +260,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         let(:expected_response) do
           {
             "success" => false,
-            "status" => "bad_request",
+            "status"  => "bad_request",
             "message" => anything
           }
         end
@@ -273,7 +273,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         let(:expected_response) do
           {
             "success" => false,
-            "status" => "not_found",
+            "status"  => "not_found",
             "message" => anything
           }
         end
@@ -288,7 +288,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
       let(:expected_response) do
         {
           "success" => false,
-          "status" => expected_status,
+          "status"  => expected_status,
           "message" => anything
         }
       end
@@ -318,7 +318,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
         let(:expected_response) do
           {
             "success" => true,
-            "status" => "okay",
+            "status"  => "okay",
             "message" => anything
           }
         end
@@ -382,7 +382,7 @@ describe Ajax::QuestionController, :ajax_controller, type: :controller do
       context "when the question is an invalid value" do
         let(:question_id) { "sonic_the_hedgehog" }
 
-        include_examples "does not delete the question", "bad_request"
+        include_examples "does not delete the question", "not_found"
       end
     end
 
