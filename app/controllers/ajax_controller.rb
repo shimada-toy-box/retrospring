@@ -24,7 +24,7 @@ class AjaxController < ApplicationController
     @response = {
       success: false,
       message: e.message,
-      status: e.code
+      status:  e.code
     }
 
     return_response
