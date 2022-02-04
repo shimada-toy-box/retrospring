@@ -4,6 +4,7 @@ class CommentSmile < ApplicationRecord
   validates :user_id, presence: true, uniqueness: { scope: :comment_id, message: "already smiled comment" }
   validates :comment_id, presence: true
 
+  # rubocop:disable Rails/SkipsModelValidations
   after_create do
     Notification.notify comment.user, self unless comment.user == user
     user.increment! :comment_smiled_count
@@ -15,6 +16,7 @@ class CommentSmile < ApplicationRecord
     user&.decrement! :comment_smiled_count
     comment&.decrement! :smile_count
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   def notification_type(*_args)
     Notifications::CommentSmiled
