@@ -12,8 +12,8 @@ class CommentSmile < ApplicationRecord
 
   before_destroy do
     Notification.denotify comment.user, self unless comment.user == user
-    user.decrement! :comment_smiled_count
-    comment.decrement! :smile_count
+    user&.decrement! :comment_smiled_count
+    comment&.decrement! :smile_count
   end
 
   def notification_type(*_args)
