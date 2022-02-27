@@ -117,22 +117,6 @@ class User < ApplicationRecord
     question.answers.pluck(:user_id).include? self.id
   end
 
-  # smiles a comment
-  # @param comment [Comment] the comment to smile
-  def smile_comment(comment)
-    CommentSmile.create!(user: self, comment: comment)
-  end
-
-  # unsmile an comment
-  # @param comment [Comment] the comment to unsmile
-  def unsmile_comment(comment)
-    CommentSmile.find_by(user: self, comment: comment).destroy
-  end
-
-  def smiled_comment?(comment)
-    comment.smiles.pluck(:user_id).include? self.id
-  end
-
   def comment(answer, content)
     Comment.create!(user: self, answer: answer, content: content)
   end
